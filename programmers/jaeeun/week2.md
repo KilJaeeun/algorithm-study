@@ -365,3 +365,201 @@ def findPrime():
 
 
 
+## 신규 아이디 추천
+
+* 문제링크: https://programmers.co.kr/learn/courses/30/lessons/72410
+
+###### 문제 설명
+
+카카오에 입사한 신입 개발자 `네오`는 "카카오계정개발팀"에 배치되어, 카카오 서비스에 가입하는 유저들의 아이디를 생성하는 업무를 담당하게 되었습니다. "네오"에게 주어진 첫 업무는 새로 가입하는 유저들이 카카오 아이디 규칙에 맞지 않는 아이디를 입력했을 때, 입력된 아이디와 유사하면서 규칙에 맞는 아이디를 추천해주는 프로그램을 개발하는 것입니다.
+다음은 카카오 아이디의 규칙입니다.
+
+- 아이디의 길이는 3자 이상 15자 이하여야 합니다.
+- 아이디는 알파벳 소문자, 숫자, 빼기(`-`), 밑줄(`_`), 마침표(`.`) 문자만 사용할 수 있습니다.
+- 단, 마침표(`.`)는 처음과 끝에 사용할 수 없으며 또한 연속으로 사용할 수 없습니다.
+
+"네오"는 다음과 같이 7단계의 순차적인 처리 과정을 통해 신규 유저가 입력한 아이디가 카카오 아이디 규칙에 맞는 지 검사하고 규칙에 맞지 않은 경우 규칙에 맞는 새로운 아이디를 추천해 주려고 합니다.
+신규 유저가 입력한 아이디가 `new_id` 라고 한다면,
+
+```
+1단계 new_id의 모든 대문자를 대응되는 소문자로 치환합니다.
+2단계 new_id에서 알파벳 소문자, 숫자, 빼기(-), 밑줄(_), 마침표(.)를 제외한 모든 문자를 제거합니다.
+3단계 new_id에서 마침표(.)가 2번 이상 연속된 부분을 하나의 마침표(.)로 치환합니다.
+4단계 new_id에서 마침표(.)가 처음이나 끝에 위치한다면 제거합니다.
+5단계 new_id가 빈 문자열이라면, new_id에 "a"를 대입합니다.
+6단계 new_id의 길이가 16자 이상이면, new_id의 첫 15개의 문자를 제외한 나머지 문자들을 모두 제거합니다.
+     만약 제거 후 마침표(.)가 new_id의 끝에 위치한다면 끝에 위치한 마침표(.) 문자를 제거합니다.
+7단계 new_id의 길이가 2자 이하라면, new_id의 마지막 문자를 new_id의 길이가 3이 될 때까지 반복해서 끝에 붙입니다.
+```
+
+------
+
+예를 들어, new_id 값이 "...!@BaT#*..y.abcdefghijklm" 라면, 위 7단계를 거치고 나면 new_id는 아래와 같이 변경됩니다.
+
+1단계 대문자 'B'와 'T'가 소문자 'b'와 't'로 바뀌었습니다.
+`"...!@BaT#*..y.abcdefghijklm"` → `"...!@bat#*..y.abcdefghijklm"`
+
+2단계 '!', '@', '#', '*' 문자가 제거되었습니다.
+`"...!@bat#*..y.abcdefghijklm"` → `"...bat..y.abcdefghijklm"`
+
+3단계 '...'와 '..' 가 '.'로 바뀌었습니다.
+`"...bat..y.abcdefghijklm"` → `".bat.y.abcdefghijklm"`
+
+4단계 아이디의 처음에 위치한 '.'가 제거되었습니다.
+`".bat.y.abcdefghijklm"` → `"bat.y.abcdefghijklm"`
+
+5단계 아이디가 빈 문자열이 아니므로 변화가 없습니다.
+`"bat.y.abcdefghijklm"` → `"bat.y.abcdefghijklm"`
+
+6단계 아이디의 길이가 16자 이상이므로, 처음 15자를 제외한 나머지 문자들이 제거되었습니다.
+`"bat.y.abcdefghijklm"` → `"bat.y.abcdefghi"`
+
+7단계 아이디의 길이가 2자 이하가 아니므로 변화가 없습니다.
+`"bat.y.abcdefghi"` → `"bat.y.abcdefghi"`
+
+따라서 신규 유저가 입력한 new_id가 "...!@BaT#*..y.abcdefghijklm"일 때, 네오의 프로그램이 추천하는 새로운 아이디는 "bat.y.abcdefghi" 입니다.
+
+------
+
+#### **[문제]**
+
+신규 유저가 입력한 아이디를 나타내는 new_id가 매개변수로 주어질 때, "네오"가 설계한 7단계의 처리 과정을 거친 후의 추천 아이디를 return 하도록 solution 함수를 완성해 주세요.
+
+#### **[제한사항]**
+
+new_id는 길이 1 이상 1,000 이하인 문자열입니다.
+new_id는 알파벳 대문자, 알파벳 소문자, 숫자, 특수문자로 구성되어 있습니다.
+new_id에 나타날 수 있는 특수문자는 `-_.~!@#$%^&*()=+[{]}:?,<>/` 로 한정됩니다.
+
+
+
+#### 구현
+
+```python
+
+def solution(new_id):
+    answer = step2(step1(new_id))
+    return answer
+
+
+def step1(new_id):
+    return new_id.lower()
+
+
+def step2(new_id):
+    new_id = list(new_id)
+    ans = []
+    spot_point = 0
+    count = 0
+    for i in new_id:
+        if "a" <= i <= "z" or "0" <= i <= "9" or i == "-" or i == "_" or i == ".":
+            count += 1
+            if i == "." and spot_point == 0:
+                if count == 1:
+                    pass
+                else:
+                    ans.append(i)
+                spot_point += 1
+
+            elif i == "." and spot_point > 0:
+                spot_point += 1
+                continue
+            else:
+                spot_point = 0
+                ans.append(i)
+    if ans and ans[-1] == ".":
+        ans.pop()
+    if not ans:
+        ans = ["a"]
+    if len(ans) >= 16:
+        ans = ans[:15]
+        if ans and ans[-1] == ".":
+            ans.pop()
+    if len(ans) <= 2:
+        last = ans[-1]
+        while len(ans) < 3:
+            ans.append(last)
+    return ''.join(ans)
+
+```
+
+---
+
+##  크레인 인형뽑기 게임
+
+###### 문제 설명
+
+게임개발자인 "죠르디"는 크레인 인형뽑기 기계를 모바일 게임으로 만들려고 합니다.
+"죠르디"는 게임의 재미를 높이기 위해 화면 구성과 규칙을 다음과 같이 게임 로직에 반영하려고 합니다.
+
+![crane_game_101.png](https://grepp-programmers.s3.ap-northeast-2.amazonaws.com/files/production/69f1cd36-09f4-4435-8363-b71a650f7448/crane_game_101.png)
+
+게임 화면은 **"1 x 1"** 크기의 칸들로 이루어진 **"N x N"** 크기의 정사각 격자이며 위쪽에는 크레인이 있고 오른쪽에는 바구니가 있습니다. (위 그림은 "5 x 5" 크기의 예시입니다). 각 격자 칸에는 다양한 인형이 들어 있으며 인형이 없는 칸은 빈칸입니다. 모든 인형은 "1 x 1" 크기의 격자 한 칸을 차지하며 **격자의 가장 아래 칸부터 차곡차곡 쌓여 있습니다.** 게임 사용자는 크레인을 좌우로 움직여서 멈춘 위치에서 가장 위에 있는 인형을 집어 올릴 수 있습니다. 집어 올린 인형은 바구니에 쌓이게 되는 데, 이때 바구니의 가장 아래 칸부터 인형이 순서대로 쌓이게 됩니다. 다음 그림은 [1번, 5번, 3번] 위치에서 순서대로 인형을 집어 올려 바구니에 담은 모습입니다.
+
+![crane_game_102.png](https://grepp-programmers.s3.ap-northeast-2.amazonaws.com/files/production/638e2162-b1e4-4bbb-b0d7-62d31e97d75c/crane_game_102.png)
+
+만약 같은 모양의 인형 두 개가 바구니에 연속해서 쌓이게 되면 두 인형은 터뜨려지면서 바구니에서 사라지게 됩니다. 위 상태에서 이어서 [5번] 위치에서 인형을 집어 바구니에 쌓으면 같은 모양 인형 **두 개**가 없어집니다.
+
+![crane_game_103.gif](https://grepp-programmers.s3.ap-northeast-2.amazonaws.com/files/production/8569d736-091e-4771-b2d3-7a6e95a20c22/crane_game_103.gif)
+
+크레인 작동 시 인형이 집어지지 않는 경우는 없으나 만약 인형이 없는 곳에서 크레인을 작동시키는 경우에는 아무런 일도 일어나지 않습니다. 또한 바구니는 모든 인형이 들어갈 수 있을 만큼 충분히 크다고 가정합니다. (그림에서는 화면표시 제약으로 5칸만으로 표현하였음)
+
+게임 화면의 격자의 상태가 담긴 2차원 배열 board와 인형을 집기 위해 크레인을 작동시킨 위치가 담긴 배열 moves가 매개변수로 주어질 때, 크레인을 모두 작동시킨 후 터트려져 사라진 인형의 개수를 return 하도록 solution 함수를 완성해주세요.
+
+##### **[제한사항]**
+
+- board 배열은 2차원 배열로 크기는 "5 x 5" 이상 "30 x 30" 이하입니다.
+- board의 각 칸에는 0 이상 100 이하인 정수가 담겨있습니다.
+  - 0은 빈 칸을 나타냅니다.
+  - 1 ~ 100의 각 숫자는 각기 다른 인형의 모양을 의미하며 같은 숫자는 같은 모양의 인형을 나타냅니다.
+- moves 배열의 크기는 1 이상 1,000 이하입니다.
+- moves 배열 각 원소들의 값은 1 이상이며 board 배열의 가로 크기 이하인 자연수입니다.
+
+##### **입출력 예**
+
+| board                                                        | moves             | result |
+| ------------------------------------------------------------ | ----------------- | ------ |
+| [[0,0,0,0,0],[0,0,1,0,3],[0,2,5,0,1],[4,2,4,4,2],[3,5,1,3,1]] | [1,5,3,5,1,2,1,4] | 4      |
+
+##### **입출력 예에 대한 설명**
+
+**입출력 예 #1**
+
+인형의 처음 상태는 문제에 주어진 예시와 같습니다. 크레인이 [1, 5, 3, 5, 1, 2, 1, 4] 번 위치에서 차례대로 인형을 집어서 바구니에 옮겨 담은 후, 상태는 아래 그림과 같으며 바구니에 담는 과정에서 터트려져 사라진 인형은 4개 입니다.
+
+![crane_game_104.jpg](https://grepp-programmers.s3.ap-northeast-2.amazonaws.com/files/production/bb0f59c7-6b72-485a-8302-217fe53ea88f/crane_game_104.jpg)
+
+
+
+### 구현
+
+```python
+import collections
+def transpose(graph):
+    return list(map(list, zip(*graph)))
+def solution(board, moves):
+    stack=[]
+    board=transpose(board)
+    answer = 0
+    for m in range(len(board)):
+        board[m]=collections.deque(board[m])
+    for m in moves:
+        m-=1
+        while board[m] and board[m][0]==0:
+            board[m].popleft()
+        if  board[m] and board[m][0]!=0:
+            picked=board[m].popleft()
+            if stack and stack[-1]!=picked:
+                stack.append(picked)
+                continue
+            elif stack and stack[-1]==picked:
+                stack.pop()
+                answer += 2
+                continue
+            else:
+                stack.append(picked)
+                continue
+                
+    return answer
+```
+
